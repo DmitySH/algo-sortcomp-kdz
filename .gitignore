@@ -1,0 +1,9 @@
+.idea
+CMakeLists.txt
+Contest_template
+cmake-build-debug
+cmake-build-release
+cmake-build-asan
+cmake-build-tsan
+tests
+test.cpp
