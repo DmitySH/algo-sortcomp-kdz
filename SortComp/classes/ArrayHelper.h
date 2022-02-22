@@ -8,14 +8,13 @@ class ArrayHelper {
 public:
     explicit ArrayHelper(int size) {
         this->size_ = size;
-        srand(static_cast<unsigned int>(time(nullptr)));
     }
 
     ~ArrayHelper() = default;
 
     std::vector<int> zeroFiveArray();
     std::vector<int> zeroFourThousandArray();
-    std::vector<int> almostSortedArray(int step, int swaps);
+    std::vector<int> almostSortedArray(int step = 1025, int swaps = 25);
     std::vector<int> reversedArray() const;
 
 
