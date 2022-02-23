@@ -12,10 +12,12 @@ public:
     static void binaryInsertionSort(std::vector<int> *a);
     static void stableCountSort(std::vector<int> *a);
     static void mergeSort(std::vector<int> *list);
-    static void quickSortHoar(std::vector<int> *list, int from, int to);
-    static void quickSortLomuto(std::vector<int> *list, int from, int to);
+    static void quickSortHoar(std::vector<int> *list);
+    static void quickSortLomuto(std::vector<int> *list);
 
 private:
+    static void quickSortHoar(std::vector<int> *list, int from, int to);
+    static void quickSortLomuto(std::vector<int> *list, int from, int to);
     static int sorterBS(const std::vector<int> &a, int len, int key);
     static void merge(std::vector<int> *list, int begin, int mid, int end);
     static std::pair<int, int> hoar(std::vector<int> *list, int from, int to);

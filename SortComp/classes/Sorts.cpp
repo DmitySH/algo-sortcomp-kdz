@@ -113,7 +113,7 @@ void Sorts::stableCountSort(std::vector<int> *a) {
         (*pre)[i] = 0;
     }
 
-    for (int i : *a) {
+    for (int i: *a) {
         ++(*pre)[i - min];
     }
 
@@ -231,6 +231,14 @@ void Sorts::quickSortLomuto(std::vector<int> *list, int from, int to) {
         quickSortLomuto(list, from, pivot - 1);
         quickSortLomuto(list, pivot + 1, to);
     }
+}
+
+void Sorts::quickSortHoar(std::vector<int> *list) {
+    quickSortHoar(list, 0, list->size() - 1);
+}
+
+void Sorts::quickSortLomuto(std::vector<int> *list) {
+    quickSortLomuto(list, 0, list->size() - 1);
 }
 
 
