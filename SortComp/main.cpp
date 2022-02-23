@@ -27,8 +27,6 @@ int main() {
 
     regenerate(&arrays, helper);
 
-    regenerate(&arrays, helper);
-
 //    std::cout << ArrayHelper::checkSorted(vec);
     const int number_of_sorts = 8;
 
@@ -46,6 +44,21 @@ int main() {
 //          Sorts::quickSortLomuto,
 //
     };
+
+    // Холостой прогон.
+    for (int sort_num = 0; sort_num < number_of_sorts; ++sort_num) {
+        for (int arr_num = 0; arr_num < number_of_arrays; ++arr_num) {
+            std::vector<int> to_sort(4100);
+            for (int i = 0; i < 4100; ++i) {
+                to_sort[i] = arrays[arr_num][i];
+            }
+            sorts[sort_num](&to_sort);
+        }
+    }
+
+    std::cout << "Warmed up\n";
+    regenerate(&arrays, helper);
+
 
     std::vector<std::string> sort_names{
             "Выбором",
@@ -72,7 +85,7 @@ int main() {
     // Пробегаем по всем сортировкам.
     for (int sort_num = 0; sort_num < number_of_sorts; ++sort_num) {
         // Создаем новые эталонные массивы.
-        regenerate(&arrays, helper);
+//        regenerate(&arrays, helper);
 
         // Создаем файловые потоки для двух видов размерностей.
         std::ofstream sort_file_small("../tables/sorts/" + sort_names[sort_num] + " small_range" + ".csv");
@@ -81,7 +94,6 @@ int main() {
         // Создаем верхнюю строку таблицы с сортировками.
         sort_file_small << "Число элементов;";
         sort_file_big << "Число элементов;";
-
         for (int i = 0; i < arr_type_names.size(); ++i) {
             sort_file_small << arr_type_names[i];
             sort_file_big << arr_type_names[i];
@@ -93,6 +105,7 @@ int main() {
         }
         sort_file_small << "\n";
         sort_file_big << "\n";
+
 
         // Пробегаем по всем количествам сортируемых элементов.
         for (int elements_num = 50; elements_num <= 300; elements_num += 10) {
