@@ -14,6 +14,7 @@ public:
     static void mergeSort(std::vector<int> *list);
     static void quickSortHoar(std::vector<int> *list);
     static void quickSortLomuto(std::vector<int> *list);
+    static void heapSort(std::vector<int> *list);
 
 private:
     static void quickSortHoar(std::vector<int> *list, int from, int to);

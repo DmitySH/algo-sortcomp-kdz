@@ -243,10 +243,51 @@ void Sorts::quickSortLomuto(std::vector<int> *list) {
 
 
 // Пирамидальная сортировка.
+template <typename T>
+class Heap {
+public:
+    explicit Heap(std::vector<T> *array) {
+        arr_ = array;
+        for (int i = static_cast<int>(array->size()) / 2 - 1; i >= 0; --i) {
+            heapify(i, array->size());
+        }
+    }
 
+    ~Heap() = default;
 
+    void heapify(int index, int size_array) {
+        int left = (index << 1) + 1;
+        int right = (index << 1) + 2;
+        int swap = index;
 
+        if (left < size_array && (*arr_)[swap] < (*arr_)[left]) {
+            swap = left;
+        }
+        if (right < size_array && (*arr_)[swap] < (*arr_)[right]) {
+            swap = right;
+        }
 
+        if (swap == index) {
+            return;
+        }
 
+        std::swap((*arr_)[swap], (*arr_)[index]);
+        heapify(swap, size_array);
+    }
 
+    void sort() {
+        for (int i = arr_->size() - 1; i > 0; --i) {
+            std::swap((*arr_)[i], (*arr_)[0]);
+            heapify(0, i);
+        }
+    }
+
+private:
+    std::vector<T> *arr_;
+};
+
+void Sorts::heapSort(std::vector<int> *list) {
+    Heap<int> heap(list);
+    heap.sort();
+}
 

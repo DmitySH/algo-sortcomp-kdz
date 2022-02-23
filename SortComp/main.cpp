@@ -12,13 +12,32 @@ void regenerate(std::vector<std::vector<int>> *arrays, ArrayHelper helper) {
     (*arrays)[3] = helper.reversedArray();
 }
 
+void arr_to_file(std::vector<int> *list, std::ofstream *file) {
+    for (int i = 0; i < list->size(); ++i) {
+        (*file) << (*list)[i] << ' ';
+    }
+    (*file) << '\n';
+}
+
 void range(const std::vector<std::vector<int>> &arrays, const int number_of_sorts,
            void (**sorts)(std::vector<int> *),
            std::vector<std::vector<int64_t>> &result,
            int start, int stop, int step
 ) {
-    // Пробег по маленькому диапазону.
+    // Пробег по диапазону.
     int row = 0;
+
+//    std::ofstream ofs;
+
+    // Очистка input-output.
+//    ofs.open("../io/input.txt", std::ofstream::out | std::ofstream::trunc);
+//    ofs.close();
+//    ofs.open("../io/output.txt", std::ofstream::out | std::ofstream::trunc);
+//    ofs.close();
+
+//    std::ofstream in("../io/input.txt", std::ios_base::app);
+//    std::ofstream out("../io/output.txt", std::ios_base::app);
+
     for (int elements_num = start; elements_num <= stop; elements_num += step) {
         result[row][0] = elements_num;
 
@@ -34,11 +53,21 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
                     to_sort[i] = arrays[arr_num][i];
                 }
 
+//                arr_to_file(&to_sort, &in);
+
                 // Замеряем время.
                 auto begin = std::chrono::high_resolution_clock::now();
                 sorts[sort_num](&to_sort);
                 auto elapsed = std::chrono::high_resolution_clock::now() - begin;
                 int64_t ns = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+
+                // Отсортирован ли массив.
+                if (!ArrayHelper::checkSorted(to_sort)) {
+                    std::cout << "Not sorted";
+                    throw std::exception();
+                }
+
+//                arr_to_file(&to_sort, &out);
 
                 // Сохраняем результат.
                 result[row][1 + 4 * sort_num + arr_num] += ns;
@@ -46,6 +75,9 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
         }
         ++row;
     }
+
+//    in.close();
+//    out.close();
 }
 
 void normalize(std::vector<std::vector<int64_t>> &result, const int number_of_progons) {
@@ -56,28 +88,30 @@ void normalize(std::vector<std::vector<int64_t>> &result, const int number_of_pr
     }
 }
 
+
 void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) {
     std::vector<std::string> sort_names{
             "Выбором",
             "Пузырьковая",
-            "Пузырьковая Айв1",
-            "Пузырьковая Айв2",
+            "Пузырьковая_Айверсон1",
+            "Пузырьковая_Айверсон2",
             "Вставками",
-            "Бинарными вставками",
-            "Подсчетом устойчивая",
+            "Бинарными_вставками",
+            "Подсчетом_устойчивая",
             "ЛПОЫВЛПАОЫЛВ",
             "Слиянием",
-            "Быстрая Хоар",
-            "Быстрая Ломуто",
-            "43Ц423"
+            "Быстрая_Хоар",
+            "Быстрая_Ломуто",
+            "Пирамидальная"
     };
 
     std::vector<std::string> arr_type_names{
-            "Маленькие числа",
-            "Большие числа",
-            "Почти отсортированный",
-            "Обратно отсортированный"
+            "Случайные [0..5]",
+            "Случайные [0..4000]",
+            "Почти отсортированный [0..4000]",
+            "Обратно отсортированный [4100 -> 1]"
     };
+
     (*file) << "Размер массива;";
     for (int i = 0; i < sort_names.size(); ++i) {
         for (int j = 0; j < arr_type_names.size(); ++j) {
@@ -111,8 +145,11 @@ int main() {
             std::vector<int>()
     };
 
+
     regenerate(&arrays, helper);
 
+//    std::vector<int> vec = helper.reversedArray();
+//    Sorts::heapSort(&vec);
 //    std::cout << ArrayHelper::checkSorted(vec);
     const int number_of_sorts = 12;
 
@@ -130,9 +167,7 @@ int main() {
             Sorts::mergeSort,
             Sorts::quickSortHoar,
             Sorts::quickSortLomuto,
-//
-            Sorts::stableCountSort,
-//
+            Sorts::heapSort,
     };
 
 
@@ -156,7 +191,7 @@ int main() {
     std::vector<std::vector<int64_t>> result_low(26, std::vector<int64_t>(49));
     std::vector<std::vector<int64_t>> result_big(41, std::vector<int64_t>(49));
 
-    const int number_of_progons = 20;
+    const int number_of_progons = 300;
 
     for (int progon_id = 0; progon_id < number_of_progons; ++progon_id) {
         std::cout << progon_id << std::endl;
@@ -168,8 +203,8 @@ int main() {
     normalize(result_big, number_of_progons);
 
 
-    std::ofstream file1("../tables/1.csv");
-    std::ofstream file2("../tables/2.csv");
+    std::ofstream file1("../tmp_tables/1.csv");
+    std::ofstream file2("../tmp_tables/2.csv");
 
     out_to_csv(result_low, &file1);
     file1.close();
