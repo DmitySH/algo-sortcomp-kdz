@@ -53,6 +53,7 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
                     to_sort[i] = arrays[arr_num][i];
                 }
 
+
 //                arr_to_file(&to_sort, &in);
 
                 // Замеряем время.
@@ -98,7 +99,7 @@ void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) 
             "Вставками",
             "Бинарными_вставками",
             "Подсчетом_устойчивая",
-            "ЛПОЫВЛПАОЫЛВ",
+            "Цифровая",
             "Слиянием",
             "Быстрая_Хоар",
             "Быстрая_Ломуто",
@@ -135,6 +136,8 @@ void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) 
 }
 
 int main() {
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     ArrayHelper helper(4100);
 
     const int number_of_arrays = 4;
@@ -162,7 +165,7 @@ int main() {
             Sorts::binaryInsertionSort,
             Sorts::stableCountSort,
 //
-            Sorts::stableCountSort,
+            Sorts::lsdSort,
 //
             Sorts::mergeSort,
             Sorts::quickSortHoar,
@@ -184,15 +187,27 @@ int main() {
         }
     }
 
-    std::cout << "Warmed up\n";
+    std::cout << "Warmed up first\n";
+    regenerate(&arrays, helper);
+
+    std::vector<std::vector<int64_t>> test_low(26, std::vector<int64_t>(49));
+    std::vector<std::vector<int64_t>> test_big(41, std::vector<int64_t>(49));
+
+    const int warmup_number = 10;
+    for (int progon_id = 0; progon_id < warmup_number; ++progon_id) {
+        std::cout << progon_id << std::endl;
+        range(arrays, number_of_sorts, sorts, test_low, 50, 300, 10);
+        range(arrays, number_of_sorts, sorts, test_big, 100, 4100, 100);
+    }
+
+    std::cout << "Warmed up second\n";
     regenerate(&arrays, helper);
 
 
     std::vector<std::vector<int64_t>> result_low(26, std::vector<int64_t>(49));
     std::vector<std::vector<int64_t>> result_big(41, std::vector<int64_t>(49));
 
-    const int number_of_progons = 300;
-
+    const int number_of_progons = 20;
     for (int progon_id = 0; progon_id < number_of_progons; ++progon_id) {
         std::cout << progon_id << std::endl;
         range(arrays, number_of_sorts, sorts, result_low, 50, 300, 10);
@@ -211,7 +226,8 @@ int main() {
     out_to_csv(result_big, &file2);
     file2.close();
 
-    int x = 5;
+    //1 11 3 13 5 15 7 17 9 19 2 4 6 8 10 12 14 16 18 20
+
 
     return 0;
 }

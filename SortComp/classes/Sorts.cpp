@@ -133,7 +133,53 @@ void Sorts::stableCountSort(std::vector<int> *a) {
 }
 
 // Цифровая сортировка.
+void Sorts::lsdSort(std::vector<int> *a) {
+    const int k_base = 256;
 
+    std::vector<int> *res = new std::vector<int>(a->size());
+
+    int min = *std::min_element(a->begin(), a->end());
+    int mask = 1;
+
+    for (int i = 0; i < a->size(); ++i) {
+        (*a)[i] -= min;
+    }
+
+    int max = *std::max_element(a->begin(), a->end());
+
+    while (max / mask > 0) {
+        std::vector<int64_t> pre(k_base);
+
+        for (int i = 0; i < k_base; ++i) {
+            pre[i] = 0;
+        }
+
+        for (int i = 0; i < a->size(); ++i) {
+            int64_t d = (*a)[i] / mask % k_base;
+            ++pre[d];
+        }
+
+        for (int i = 1; i < k_base; ++i) {
+            pre[i] += pre[i - 1];
+        }
+
+        for (int i = a->size() - 1; i >= 0; --i) {
+            int64_t d = (*a)[i] / mask % k_base;
+            (*res)[pre[d] - 1] = (*a)[i];
+            --pre[d];
+        }
+        for (int i = 0; i < a->size(); ++i) {
+            (*a)[i] = (*res)[i];
+        }
+        mask = mask << 8;
+    }
+
+    for (int i = 0; i < a->size(); ++i) {
+        (*a)[i] += min;
+    }
+
+    delete res;
+}
 
 
 void Sorts::merge(std::vector<int> *list, int begin, int mid, int end) {
@@ -243,51 +289,32 @@ void Sorts::quickSortLomuto(std::vector<int> *list) {
 
 
 // Пирамидальная сортировка.
-template <typename T>
-class Heap {
-public:
-    explicit Heap(std::vector<T> *array) {
-        arr_ = array;
-        for (int i = static_cast<int>(array->size()) / 2 - 1; i >= 0; --i) {
-            heapify(i, array->size());
-        }
-    }
+void Sorts::heapify(std::vector<int> *heap, int parent, int num) {
+    while (2 * parent + 1 < num) {
+        int left = parent * 2 + 1;
+        int right = parent * 2 + 2;
+        int min = left;
 
-    ~Heap() = default;
-
-    void heapify(int index, int size_array) {
-        int left = (index << 1) + 1;
-        int right = (index << 1) + 2;
-        int swap = index;
-
-        if (left < size_array && (*arr_)[swap] < (*arr_)[left]) {
-            swap = left;
-        }
-        if (right < size_array && (*arr_)[swap] < (*arr_)[right]) {
-            swap = right;
+        if (right < num && (*heap)[left] < (*heap)[right]) {
+            min = right;
         }
 
-        if (swap == index) {
+        if ((*heap)[min] <= (*heap)[parent]) {
             return;
         }
 
-        std::swap((*arr_)[swap], (*arr_)[index]);
-        heapify(swap, size_array);
+        std::swap((*heap)[parent], (*heap)[min]);
+        parent = min;
     }
-
-    void sort() {
-        for (int i = arr_->size() - 1; i > 0; --i) {
-            std::swap((*arr_)[i], (*arr_)[0]);
-            heapify(0, i);
-        }
-    }
-
-private:
-    std::vector<T> *arr_;
-};
+}
 
 void Sorts::heapSort(std::vector<int> *list) {
-    Heap<int> heap(list);
-    heap.sort();
+    for (int i = (list->size() / 2) - 1; i >= 0; --i) {
+        heapify(list, i, list->size());
+    }
+    for (int i = list->size() - 1; i > 0; --i) {
+        std::swap((*list)[0], (*list)[i]);
+        heapify(list, 0, i);
+    }
 }
 
