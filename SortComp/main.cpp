@@ -213,7 +213,7 @@ int main() {
     std::vector<std::vector<int64_t>> result_low(26, std::vector<int64_t>(49));
     std::vector<std::vector<int64_t>> result_big(41, std::vector<int64_t>(49));
 
-    const int number_of_progons = 500;
+    const int number_of_progons = 1000;
     for (int progon_id = 0; progon_id < number_of_progons; ++progon_id) {
         std::cout << progon_id << std::endl;
         range(arrays, number_of_sorts, sorts, result_low, 50, 300, 10);
@@ -231,9 +231,6 @@ int main() {
     file1.close();
     out_to_csv(result_big, &file2);
     file2.close();
-
-    //1 11 3 13 5 15 7 17 9 19 2 4 6 8 10 12 14 16 18 20
-
 
     return 0;
 }
