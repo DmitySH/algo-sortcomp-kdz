@@ -27,17 +27,6 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
     // Пробег по диапазону.
     int row = 0;
 
-//    std::ofstream ofs;
-
-    // Очистка input-output.
-//    ofs.open("../io/input.txt", std::ofstream::out | std::ofstream::trunc);
-//    ofs.close();
-//    ofs.open("../io/output.txt", std::ofstream::out | std::ofstream::trunc);
-//    ofs.close();
-
-//    std::ofstream in("../io/input.txt", std::ios_base::app);
-//    std::ofstream out("../io/output.txt", std::ios_base::app);
-
     for (int elements_num = start; elements_num <= stop; elements_num += step) {
         result[row][0] = elements_num;
 
@@ -52,10 +41,6 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
                 for (int i = 0; i < elements_num; ++i) {
                     to_sort[i] = arrays[arr_num][i];
                 }
-
-
-//                arr_to_file(&to_sort, &in);
-
                 // Замеряем время.
                 auto begin = std::chrono::high_resolution_clock::now();
                 sorts[sort_num](&to_sort);
@@ -67,8 +52,6 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
                     std::cout << "Not sorted";
                     throw std::exception();
                 }
-
-//                arr_to_file(&to_sort, &out);
 
                 // Сохраняем результат.
                 result[row][1 + 4 * sort_num + arr_num] += ns;
@@ -83,7 +66,7 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
 
 void normalize(std::vector<std::vector<int64_t>> &result, const int number_of_progons) {
     for (int i = 0; i < result.size(); ++i) {
-        for (int j = 1; j < result[i].size() - 1; ++j) {
+        for (int j = 1; j < result[i].size(); ++j) {
             result[i][j] = result[i][j] / number_of_progons;
         }
     }
@@ -147,13 +130,8 @@ int main() {
             std::vector<int>(),
             std::vector<int>()
     };
-
-
     regenerate(&arrays, helper);
 
-//    std::vector<int> vec = helper.reversedArray();
-//    Sorts::heapSort(&vec);
-//    std::cout << ArrayHelper::checkSorted(vec);
     const int number_of_sorts = 12;
 
     void (*sorts[number_of_sorts])(std::vector<int> *) {
@@ -164,15 +142,43 @@ int main() {
             Sorts::insertionSort,
             Sorts::binaryInsertionSort,
             Sorts::stableCountSort,
-//
             Sorts::lsdSort,
-//
             Sorts::mergeSort,
             Sorts::quickSortHoar,
             Sorts::quickSortLomuto,
             Sorts::heapSort,
     };
 
+    /*
+
+    // Очистка input-output.
+    std::ofstream ofs;
+    ofs.open("../io/input.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+    ofs.open("../io/output.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+
+    std::ofstream in("../io/input.txt", std::ios_base::app);
+    std::ofstream out("../io/output.txt", std::ios_base::app);
+
+    // Проверка сортировок.
+    for (int sort_num = 0; sort_num < number_of_sorts; ++sort_num) {
+        for (int arr_num = 0; arr_num < number_of_arrays; ++arr_num) {
+            std::vector<int> to_sort(4100);
+            for (int j = 0; j < 4100; ++j) {
+                to_sort[j] = arrays[arr_num][j];
+            }
+            // Массив-остортированный массив в input.txt-output.txt.
+            arr_to_file(&to_sort, &in);
+            sorts[sort_num](&to_sort);
+            arr_to_file(&to_sort, &out);
+        }
+    }
+
+    in.close();
+    out.close();
+
+    */
 
     // 10 холостых прогонов.
     for (int i = 0; i < 10; ++i) {
@@ -207,7 +213,7 @@ int main() {
     std::vector<std::vector<int64_t>> result_low(26, std::vector<int64_t>(49));
     std::vector<std::vector<int64_t>> result_big(41, std::vector<int64_t>(49));
 
-    const int number_of_progons = 20;
+    const int number_of_progons = 500;
     for (int progon_id = 0; progon_id < number_of_progons; ++progon_id) {
         std::cout << progon_id << std::endl;
         range(arrays, number_of_sorts, sorts, result_low, 50, 300, 10);
@@ -218,8 +224,8 @@ int main() {
     normalize(result_big, number_of_progons);
 
 
-    std::ofstream file1("../tmp_tables/1.csv");
-    std::ofstream file2("../tmp_tables/2.csv");
+    std::ofstream file1("../tmp_tables/low.csv");
+    std::ofstream file2("../tmp_tables/big.csv");
 
     out_to_csv(result_low, &file1);
     file1.close();

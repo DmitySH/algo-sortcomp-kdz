@@ -29,19 +29,17 @@ void Sorts::bubbleSort(std::vector<int> *a) {
 }
 
 void Sorts::bubbleAiversonOneSort(std::vector<int> *a) {
-    int count = 0;
-    int i = 0;
+    int i = a->size();
     bool swapped = true;
     while (swapped) {
         swapped = false;
-        for (int j = 0; j < a->size() - i - 1; ++j) {
-            if ((*a)[j + 1] < (*a)[j]) {
-                std::swap((*a)[j + 1], (*a)[j]);
-                ++count;
+        --i;
+        for (int j = 0; j < i; ++j) {
+            if ((*a)[j] > (*a)[j + 1]) {
+                std::swap((*a)[j], (*a)[j + 1]);
                 swapped = true;
             }
         }
-        ++i;
     }
 }
 
