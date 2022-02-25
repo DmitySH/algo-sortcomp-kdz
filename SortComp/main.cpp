@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 
+// Пересоздание массивов.
 void regenerate(std::vector<std::vector<int>> *arrays, ArrayHelper helper) {
     (*arrays)[0] = helper.zeroFiveArray();
     (*arrays)[1] = helper.zeroFourThousandArray();
@@ -12,6 +13,7 @@ void regenerate(std::vector<std::vector<int>> *arrays, ArrayHelper helper) {
     (*arrays)[3] = helper.reversedArray();
 }
 
+// Вывод массива в файл.
 void arr_to_file(std::vector<int> *list, std::ofstream *file) {
     for (int i = 0; i < list->size(); ++i) {
         (*file) << (*list)[i] << ' ';
@@ -19,6 +21,7 @@ void arr_to_file(std::vector<int> *list, std::ofstream *file) {
     (*file) << '\n';
 }
 
+// Проход теста по диапазону.
 void range(const std::vector<std::vector<int>> &arrays, const int number_of_sorts,
            void (**sorts)(std::vector<int> *),
            std::vector<std::vector<int64_t>> &result,
@@ -59,11 +62,9 @@ void range(const std::vector<std::vector<int>> &arrays, const int number_of_sort
         }
         ++row;
     }
-
-//    in.close();
-//    out.close();
 }
 
+// Нормализация данных.
 void normalize(std::vector<std::vector<int64_t>> &result, const int number_of_progons) {
     for (int i = 0; i < result.size(); ++i) {
         for (int j = 1; j < result[i].size(); ++j) {
@@ -72,7 +73,7 @@ void normalize(std::vector<std::vector<int64_t>> &result, const int number_of_pr
     }
 }
 
-
+// Вывод данных в .csv файл в требуемом формате.
 void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) {
     std::vector<std::string> sort_names{
             "Выбором",
@@ -96,6 +97,7 @@ void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) 
             "Обратно отсортированный [4100 -> 1]"
     };
 
+    // Создание верхней строки таблицы.
     (*file) << "Размер массива;";
     for (int i = 0; i < sort_names.size(); ++i) {
         for (int j = 0; j < arr_type_names.size(); ++j) {
@@ -107,6 +109,7 @@ void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) 
     }
     (*file) << '\n';
 
+    // Запись непосредственно результатов.
     for (int i = 0; i < result.size(); ++i) {
         for (int j = 0; j < result[i].size(); ++j) {
             (*file) << result[i][j];
@@ -119,6 +122,7 @@ void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) 
 }
 
 int main() {
+    // Делаем сидом рандома текущее время системы.
     srand(static_cast<unsigned int>(time(nullptr)));
 
     ArrayHelper helper(4100);
@@ -133,7 +137,6 @@ int main() {
     regenerate(&arrays, helper);
 
     const int number_of_sorts = 12;
-
     void (*sorts[number_of_sorts])(std::vector<int> *) {
             Sorts::selectionSort,
             Sorts::bubbleSort,
@@ -149,6 +152,9 @@ int main() {
             Sorts::heapSort,
     };
 
+
+    // Фрагмент закомментирован, дабы не нагружать жесткий диск при каждом запуске.
+    // Корректность сортировок все равно проверяется внутри прогонов.
     /*
 
     // Очистка input-output.
@@ -199,9 +205,10 @@ int main() {
     std::vector<std::vector<int64_t>> test_low(26, std::vector<int64_t>(49));
     std::vector<std::vector<int64_t>> test_big(41, std::vector<int64_t>(49));
 
+    // Холостые прогоны, схожие с реальными.
     const int warmup_number = 10;
-    for (int progon_id = 0; progon_id < warmup_number; ++progon_id) {
-        std::cout << progon_id << std::endl;
+    for (int test_id = 0; test_id < warmup_number; ++test_id) {
+        std::cout << test_id << std::endl;
         range(arrays, number_of_sorts, sorts, test_low, 50, 300, 10);
         range(arrays, number_of_sorts, sorts, test_big, 100, 4100, 100);
     }
@@ -213,17 +220,19 @@ int main() {
     std::vector<std::vector<int64_t>> result_low(26, std::vector<int64_t>(49));
     std::vector<std::vector<int64_t>> result_big(41, std::vector<int64_t>(49));
 
-    const int number_of_progons = 1000;
-    for (int progon_id = 0; progon_id < number_of_progons; ++progon_id) {
-        std::cout << progon_id << std::endl;
+    // Реальные тестовые прогоны.
+    const int number_of_tests = 1000;
+    for (int test_id = 0; test_id < number_of_tests; ++test_id) {
+        std::cout << test_id << std::endl;
         range(arrays, number_of_sorts, sorts, result_low, 50, 300, 10);
         range(arrays, number_of_sorts, sorts, result_big, 100, 4100, 100);
     }
 
-    normalize(result_low, number_of_progons);
-    normalize(result_big, number_of_progons);
+    // Нормализация данных.
+    normalize(result_low, number_of_tests);
+    normalize(result_big, number_of_tests);
 
-
+    // Запись в файлы результатов.
     std::ofstream file1("../tmp_tables/low.csv");
     std::ofstream file2("../tmp_tables/big.csv");
 

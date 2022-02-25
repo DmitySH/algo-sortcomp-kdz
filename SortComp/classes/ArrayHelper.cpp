@@ -5,6 +5,7 @@
 #include <utility>
 #include <algorithm>
 
+// Печать массива.
 void ArrayHelper::print(const std::vector<int> &arr) {
     for (int elem: arr) {
         std::cout << elem << ' ';
@@ -12,7 +13,8 @@ void ArrayHelper::print(const std::vector<int> &arr) {
     std::cout << '\n';
 }
 
-bool ArrayHelper::checkSorted(const std::vector<int>& arr) {
+// Проверка, что массив отсортирован.
+bool ArrayHelper::checkSorted(const std::vector<int> &arr) {
     for (int i = 0; i < arr.size() - 1; i++) {
         if (arr[i] > arr[i + 1]) {
             return false;
@@ -22,15 +24,17 @@ bool ArrayHelper::checkSorted(const std::vector<int>& arr) {
     return true;
 }
 
-
+// Первый тип массива.
 std::vector<int> ArrayHelper::zeroFiveArray() {
     return createArray(0, 5);
 }
 
+// Второй тип массива.
 std::vector<int> ArrayHelper::zeroFourThousandArray() {
     return createArray(0, 4000);
 }
 
+// Третий тип массива.
 std::vector<int> ArrayHelper::almostSortedArray(int step, int swaps) {
     std::vector<int> arr = createArray(0, 4000);
 
@@ -46,6 +50,7 @@ std::vector<int> ArrayHelper::almostSortedArray(int step, int swaps) {
     return arr;
 }
 
+// Четвертый тип массива.
 std::vector<int> ArrayHelper::reversedArray() const {
     std::vector<int> arr(size_);
 

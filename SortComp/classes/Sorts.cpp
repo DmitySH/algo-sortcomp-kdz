@@ -130,7 +130,6 @@ void Sorts::stableCountSort(std::vector<int> *a) {
     delete pre;
 }
 
-// Цифровая сортировка.
 void Sorts::lsdSort(std::vector<int> *a) {
     const int k_base = 256;
 
@@ -286,7 +285,6 @@ void Sorts::quickSortLomuto(std::vector<int> *list) {
 }
 
 
-// Пирамидальная сортировка.
 void Sorts::heapify(std::vector<int> *heap, int parent, int num) {
     while (2 * parent + 1 < num) {
         int left = parent * 2 + 1;
@@ -315,4 +313,3 @@ void Sorts::heapSort(std::vector<int> *list) {
         heapify(list, 0, i);
     }
 }
-
