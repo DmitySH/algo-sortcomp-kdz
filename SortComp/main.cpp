@@ -123,7 +123,11 @@ void out_to_csv(std::vector<std::vector<int64_t>> &result, std::ofstream *file) 
 
 int main() {
     // Делаем сидом рандома текущее время системы.
-    srand(static_cast<unsigned int>(time(nullptr)));
+    auto seed = static_cast<uint32_t>(time(nullptr)); // last: 1645897668
+
+    // Записываем его значение.
+    std::cout << seed << ' ' << std::endl;
+    srand(seed);
 
     ArrayHelper helper(4100);
 
@@ -209,12 +213,12 @@ int main() {
     const int warmup_number = 10;
     for (int test_id = 0; test_id < warmup_number; ++test_id) {
         std::cout << test_id << std::endl;
+        regenerate(&arrays, helper);
         range(arrays, number_of_sorts, sorts, test_low, 50, 300, 10);
         range(arrays, number_of_sorts, sorts, test_big, 100, 4100, 100);
     }
 
     std::cout << "Warmed up second\n";
-    regenerate(&arrays, helper);
 
 
     std::vector<std::vector<int64_t>> result_low(26, std::vector<int64_t>(49));
@@ -224,6 +228,7 @@ int main() {
     const int number_of_tests = 1000;
     for (int test_id = 0; test_id < number_of_tests; ++test_id) {
         std::cout << test_id << std::endl;
+        regenerate(&arrays, helper);
         range(arrays, number_of_sorts, sorts, result_low, 50, 300, 10);
         range(arrays, number_of_sorts, sorts, result_big, 100, 4100, 100);
     }
